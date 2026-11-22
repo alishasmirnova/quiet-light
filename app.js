@@ -4,7 +4,7 @@ const products = [
   { id: 'resin-muse', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Декор «Муза»', description: 'Фигурное изделие из смолы с цветочным узором.', price: 990, image: 'OIska-iZwpspJMUu4C2ZqCK2_aBKBkAkk0bMMHLG0W85OUAJ2i7F4EMV1IbiDXxOFShYLiE0Cj3ApvmNIFo1Fvyk.jpg', alt: 'Красное фигурное изделие из смолы с розами', tag: 'РУЧНАЯ РАБОТА' },
   { id: 'new-work-1', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Доска для шахмат «Золотая клетка»', description: 'Шахматная доска ручной работы.', price: 990, image: '3O2qnVgJhxm69ej3zjYjiemlHQLhK41kksf8VYlKQYVU-tbh0ZoXP5ZVC2-GN5MFrG5fa6YnR4X7eZ6XiwPvZ77R.jpg', alt: 'Доска для шахмат «Золотая клетка»', tag: 'РУЧНАЯ РАБОТА' },
   { id: 'new-work-2', category: 'candles', categoryLabel: 'СВЕЧИ РУЧНОЙ РАБОТЫ', name: 'Свечи «Фактурные»', description: 'Свечи ручной работы для уютных моментов.', price: 1290, image: 'RKlFLslLRC4-qZwsA5sn97RluFDzeB9SofWukuZG9eWu80bytSOKkDcGNs1vw2JsLh0HwyC_GziT4o2awpuSBJAX.jpg', alt: 'Свечи «Фактурные»', tag: 'РУЧНАЯ РАБОТА' },
-  { id: 'new-work-3', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Шахматные фигуры «Розовый кварц»', description: 'Шахматные фигуры ручной работы.', price: 1490, image: 'd8WNgJMqvL-332qxDYgV16bDh0gCWTN_HSomGrs_ds_pHOZFlQdig53rYjur0sgHVWwBAimuK-tXyKRPwbPoQueL.jpg', alt: 'Шахматные фигуры «Розовый кварц»', tag: 'РУЧНАЯ РАБОТА' }
+  { id: 'new-work-3', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Шахматные фигуры', description: 'Шахматные фигуры ручной работы.', price: 1490, image: 'd8WNgJMqvL-332qxDYgV16bDh0gCWTN_HSomGrs_ds_pHOZFlQdig53rYjur0sgHVWwBAimuK-tXyKRPwbPoQueL.jpg', alt: 'Шахматные фигуры', tag: 'РУЧНАЯ РАБОТА' }
 ];
 
 const productGrid = document.querySelector('#products');
