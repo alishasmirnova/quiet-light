@@ -4,7 +4,8 @@ const products = [
   { id: 'resin-muse', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Декор «Муза»', description: 'Фигурное изделие из смолы с цветочным узором.', price: 990, image: 'OIska-iZwpspJMUu4C2ZqCK2_aBKBkAkk0bMMHLG0W85OUAJ2i7F4EMV1IbiDXxOFShYLiE0Cj3ApvmNIFo1Fvyk.jpg', alt: 'Красное фигурное изделие из смолы с розами', tag: 'РУЧНАЯ РАБОТА' },
   { id: 'new-work-1', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Доска для шахмат «Золотая клетка»', description: 'Шахматная доска ручной работы.', price: 990, image: '3O2qnVgJhxm69ej3zjYjiemlHQLhK41kksf8VYlKQYVU-tbh0ZoXP5ZVC2-GN5MFrG5fa6YnR4X7eZ6XiwPvZ77R.jpg', alt: 'Доска для шахмат «Золотая клетка»', tag: 'РУЧНАЯ РАБОТА' },
   { id: 'new-work-2', category: 'candles', categoryLabel: 'СВЕЧИ РУЧНОЙ РАБОТЫ', name: 'Свечи «Фактурные»', description: 'Свечи ручной работы для уютных моментов.', price: 1290, image: 'RKlFLslLRC4-qZwsA5sn97RluFDzeB9SofWukuZG9eWu80bytSOKkDcGNs1vw2JsLh0HwyC_GziT4o2awpuSBJAX.jpg', alt: 'Свечи «Фактурные»', tag: 'РУЧНАЯ РАБОТА' },
-  { id: 'new-work-3', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Шахматные фигуры', description: 'Шахматные фигуры ручной работы.', price: 1490, image: 'd8WNgJMqvL-332qxDYgV16bDh0gCWTN_HSomGrs_ds_pHOZFlQdig53rYjur0sgHVWwBAimuK-tXyKRPwbPoQueL.jpg', alt: 'Шахматные фигуры', tag: 'РУЧНАЯ РАБОТА' }
+  { id: 'new-work-3', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Шахматные фигуры', description: 'Шахматные фигуры ручной работы.', price: 1490, image: 'd8WNgJMqvL-332qxDYgV16bDh0gCWTN_HSomGrs_ds_pHOZFlQdig53rYjur0sgHVWwBAimuK-tXyKRPwbPoQueL.jpg', alt: 'Шахматные фигуры', tag: 'РУЧНАЯ РАБОТА' },
+  { id: 'resin-new-item', category: 'resin', categoryLabel: 'ИЗДЕЛИЯ ИЗ СМОЛЫ', name: 'Изделие из эпоксидной смолы', description: 'Изделие ручной работы из эпоксидной смолы.', price: null, image: 'eEodCF5weLPJzz9FPJY0OiFNg6J8WdAetlj9k44d21P2Y3bCBSJBEbXrJTtVYobcEeW6w83byxW4GhBVZE3UHj_n.jpg', alt: 'Изделие ручной работы из эпоксидной смолы', tag: 'РУЧНАЯ РАБОТА' }
 ];
 
 const productGrid = document.querySelector('#products');
@@ -16,6 +17,7 @@ const backdrop = document.querySelector('.drawer-backdrop');
 const copyButton = document.querySelector('#copy-order');
 const copyStatus = document.querySelector('#copy-status');
 const money = amount => `${new Intl.NumberFormat('ru-RU').format(amount)} ₽`;
+const priceLabel = product => product.price === null ? 'По запросу' : money(product.price);
 let cart = {};
 let lastFocused = null;
 
@@ -30,23 +32,28 @@ function saveCart() {
   try { localStorage.setItem('quiet-light-cart', JSON.stringify(cart)); } catch (_) { /* Storage is optional. */ }
 }
 
+function cartTotalLabel(selected) {
+  const knownTotal = selected.reduce((sum, product) => sum + (product.price ?? 0) * cart[product.id], 0);
+  if (!selected.some(product => product.price === null)) return money(knownTotal);
+  return knownTotal ? `${money(knownTotal)} + по запросу` : 'Цена по запросу';
+}
+
 function renderProducts(filter = 'all') {
   productGrid.innerHTML = products.filter(product => filter === 'all' || product.category === filter).map(product => `
     <article class="product-card">
       <div class="product-image"><img src="${product.image}" alt="${product.alt}" loading="lazy"><span class="product-tag">${product.tag}</span></div>
-      <div class="product-info"><span class="product-category">${product.categoryLabel}</span><div class="product-title-row"><h3 class="product-title">${product.name}</h3><span class="product-price">${money(product.price)}</span></div><p class="product-description">${product.description}</p><button class="add-button" type="button" data-add="${product.id}" aria-label="Добавить ${product.name} в корзину">В корзину &nbsp; +</button></div>
+      <div class="product-info"><span class="product-category">${product.categoryLabel}</span><div class="product-title-row"><h3 class="product-title">${product.name}</h3><span class="product-price">${priceLabel(product)}</span></div><p class="product-description">${product.description}</p><button class="add-button" type="button" data-add="${product.id}" aria-label="Добавить ${product.name} в корзину">В корзину &nbsp; +</button></div>
     </article>`).join('');
 }
 
 function renderCart() {
   const selected = products.filter(product => cart[product.id]);
   const count = selected.reduce((sum, product) => sum + cart[product.id], 0);
-  const total = selected.reduce((sum, product) => sum + product.price * cart[product.id], 0);
   cartCount.textContent = count;
-  cartTotal.textContent = money(total);
+  cartTotal.textContent = cartTotalLabel(selected);
   copyButton.disabled = !count;
   cartItems.innerHTML = selected.length ? selected.map(product => `
-    <article class="cart-item"><img src="${product.image}" alt=""><div><h3>${product.name}</h3><p>${money(product.price)} за шт.</p><div class="quantity"><button type="button" data-change="${product.id}" data-delta="-1" aria-label="Уменьшить количество ${product.name}">−</button><span>${cart[product.id]}</span><button type="button" data-change="${product.id}" data-delta="1" aria-label="Увеличить количество ${product.name}">+</button></div></div><button class="remove-item" type="button" data-remove="${product.id}" aria-label="Удалить ${product.name}">×</button></article>`).join('') : '<p class="cart-empty">Здесь пока пусто.<br>Пусть это исправит что-то прекрасное ✳</p>';
+    <article class="cart-item"><img src="${product.image}" alt=""><div><h3>${product.name}</h3><p>${priceLabel(product)}${product.price === null ? '' : ' за шт.'}</p><div class="quantity"><button type="button" data-change="${product.id}" data-delta="-1" aria-label="Уменьшить количество ${product.name}">−</button><span>${cart[product.id]}</span><button type="button" data-change="${product.id}" data-delta="1" aria-label="Увеличить количество ${product.name}">+</button></div></div><button class="remove-item" type="button" data-remove="${product.id}" aria-label="Удалить ${product.name}">×</button></article>`).join('') : '<p class="cart-empty">Здесь пока пусто.<br>Пусть это исправит что-то прекрасное ✳</p>';
   saveCart();
 }
 
@@ -120,8 +127,9 @@ document.addEventListener('keydown', event => {
 copyButton.addEventListener('click', async () => {
   const selected = products.filter(product => cart[product.id]);
   if (!selected.length) return;
-  const total = selected.reduce((sum, product) => sum + product.price * cart[product.id], 0);
-  const text = ['Моя корзина «Тихий свет»:', ...selected.map(product => `${product.name} — ${cart[product.id]} шт. × ${money(product.price)} = ${money(product.price * cart[product.id])}`), `Итого: ${money(total)}`].join('\n');
+  const text = ['Моя корзина «Тихий свет»:', ...selected.map(product => product.price === null
+    ? `${product.name} — ${cart[product.id]} шт. — цена по запросу`
+    : `${product.name} — ${cart[product.id]} шт. × ${money(product.price)} = ${money(product.price * cart[product.id])}`), `Итого: ${cartTotalLabel(selected)}`].join('\n');
   try {
     if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard unavailable');
     await navigator.clipboard.writeText(text);
